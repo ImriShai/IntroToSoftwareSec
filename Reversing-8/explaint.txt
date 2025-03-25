@@ -1,0 +1,175 @@
+Need to make a pdf.
+
+we add execution (+X) for the files:
+chmod +x Beatles Elvis Madona
+
+Madona: 
+
+we run file to see the type and if stripped or not:
+
+file Madonna 
+Madonna: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=885cbe567782250e9d50902700a35bf2ce50d682, for GNU/Linux 3.2.0, not stripped
+
+then we use strings and look for anything interesting:
+strings Madonna 
+/lib64/ld-linux-x86-64.so.2
+puts
+exit
+strlen
+ptrace
+__libc_start_main
+__cxa_finalize
+libc.so.6
+GLIBC_2.2.5
+GLIBC_2.34
+_ITM_deregisterTMCloneTable
+__gmon_start__
+_ITM_registerTMCloneTable
+PTE1
+u+UH
+TrueBlue
+No Debuggers
+Well done
+9*3$"
+GCC: (Ubuntu 13.2.0-23ubuntu4) 13.2.0
+Scrt1.o
+__abi_tag
+crtstuff.c
+deregister_tm_clones
+__do_global_dtors_aux
+completed.0
+__do_global_dtors_aux_fini_array_entry
+frame_dummy
+__frame_dummy_init_array_entry
+Madonna.c
+__FRAME_END__
+_DYNAMIC
+__GNU_EH_FRAME_HDR
+_GLOBAL_OFFSET_TABLE_
+__libc_start_main@GLIBC_2.34
+_ITM_deregisterTMCloneTable
+puts@GLIBC_2.2.5
+_edata
+_fini
+strlen@GLIBC_2.2.5
+__data_start
+__gmon_start__
+__dso_handle
+_IO_stdin_used
+_end
+ptrace@GLIBC_2.2.5
+__bss_start
+main
+exit@GLIBC_2.2.5
+__TMC_END__
+_ITM_registerTMCloneTable
+__cxa_finalize@GLIBC_2.2.5
+_init
+.symtab
+.strtab
+.shstrtab
+.interp
+.note.gnu.property
+.note.gnu.build-id
+.note.ABI-tag
+.gnu.hash
+.dynsym
+.dynstr
+.gnu.version
+.gnu.version_r
+.rela.dyn
+.rela.plt
+.init
+.plt.got
+.plt.sec
+.text
+.fini
+.rodata
+.eh_frame_hdr
+.eh_frame
+.init_array
+.fini_array
+.dynamic
+.data
+.bss
+.comment
+
+we see that there is a string "TrueBlue" which is intersting - Madona's album.
+then we test it and get:
+
+./Madonna TrueBlue
+Well done
+
+
+Beatles:
+like Madona we use file:
+file Beatles 
+Beatles: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=a0e3a183fffa889cd95ae16d39af28e62b1f7d5f, for GNU/Linux 3.2.0, not stripped
+
+The file isnt stripped.
+We try use string but there isnt anything interesting
+
+next step is to try and use ltrace to see all the libary calls the exe use:
+
+ ltrace ./Beatles password
+strlen("password")                                                                                 = 8
+strlen("password")                                                                                 = 8
+strlen("password")                                                                                 = 8
+strlen("password")                                                                                 = 8
+strlen("password")                                                                                 = 8
+strlen("password")                                                                                 = 8
+strlen("password")                                                                                 = 8
+strlen("password")                                                                                 = 8
+strlen("password")                                                                                 = 8
+strcmp("password", "Taxman\006\a")                                                                 = 28
++++ exited (status 0) +++
+
+we see that in the one before last line, it calls strcmp, which compares 2 strings, between the password we entered, and another 
+string "Taxman" and some garbage value afterward.
+Taxman is a Beatles's song, so we try it: 
+
+./Beatles Taxman
+Well done
+
+success.
+
+
+
+
+
+Elvis:
+
+like Madona we use file:
+file Elvis 
+Elvis: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=28003ddb621c89e56ce44b11ccb285232361ddc1, for GNU/Linux 3.2.0, not stripped
+
+The file isnt stripped.
+We try use string but there isnt anything interesting
+
+we try to use ltrace:
+
+ltrace ./Elvis password
+ptrace(0, 0, 0, 0)                                                                                 = -1
+puts("No Debuggers"No Debuggers
+)                                                                               = 13
+exit(1 <no return ...>
++++ exited (status 1) +++
+
+there is a defense mechanism to prevent debugging (including lrtace).
+
+So we open ghidra to see the decompiled code and try to understand something from there.
+Then when having the decompiled code we start building a normal C code:
+
+change undefined8 to int.
+add include for size_t.
+chang ulong to unsigned long
+remove the ptrace check, as its not intersting for us.
+when looking at the array of chars, we see that it gets initaized with some hexa values, using hex to assci we get "KingCreole" which is a name of Elvis's song.
+
+we try this and get:
+
+ ./Elvis KingCreole
+Well done
+
+success.
+
