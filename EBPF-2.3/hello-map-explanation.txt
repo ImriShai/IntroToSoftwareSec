@@ -1,0 +1,29 @@
+
+This script uses eBPF (Extended Berkeley Packet Filter) to count the number of system calls made by each user ID (UID) on the system. Below is a step-by-step explanation of the script:
+
+1. **Importing Libraries**:
+   The script imports the `BPF` class from the `bcc` module and the `sleep` function from the `time` module.
+
+2. **eBPF Program**:
+   The eBPF program is written as a raw string and stored in the `program` variable. It defines a hash map `counter_table` to store the count of system calls for each UID.
+
+3. **BPF_HASH Declaration**:
+   `BPF_HASH(counter_table, u64, u64);` declares a hash map named `counter_table` with keys and values of type `u64` (unsigned 64-bit integers).
+
+4. **hello Function**:
+   The `hello` function is the eBPF program that will be attached to a tracepoint. It performs the following steps:
+   - Retrieves the UID of the current process using `bpf_get_current_uid_gid()`.
+   - Looks up the current count for this UID in `counter_table`.
+   - Increments the count and updates the hash map.
+
+5. **Loading and Attaching the eBPF Program**:
+   The `BPF` object `b` is created with the eBPF program text. The `hello` function is attached to the `sys_enter` tracepoint, which triggers on every system call entry.
+
+6. **Polling and Printing the Counter Table**:
+   The script enters an infinite loop where it sleeps for 2 seconds, then iterates over the `counter_table` to print the count of system calls for each UID.
+
+This script provides a simple example of using eBPF to monitor system call activity on a per-UID basis.
+
+Overall - For each user, we count the number of syscalls made using BPF_HASH and then printing it every 2 seconds, filling the requirements of Q2.3
+
+In order to run: sudo python3 hello-map.py
