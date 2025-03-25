@@ -1,0 +1,22 @@
+
+This file is a set of instruction for this question.
+
+1. Compile the benignRandom.c file:
+    gcc benignRandom.c -o benignRandom -ldl
+
+2. Run the command: export LD_LIBRARY_PATH="."
+
+3.
+    Run the following command: gcc --shared -fPIC myLib.c -o ibc.so.6 -ldl  
+    This is done in order to compile myLib as a shared libary, with similar name to libc.so.6
+
+4. Execute the following command and find the dynamic section offset the dynstr offset and the debug :         readelf -a ./benignRandom | less
+
+(in my case dynamic section offset is 0x2db0 dynstr is 0x04c8 and debug is 0x15)
+
+5. Install hexedit if not exist, and run hexedit ./benignRandom
+
+6. Find the address that points to libc and change it to something else (need to match ibc so one byte forward)
+
+7. Find the debug, change it to needed and point it to the same location as libc
+
