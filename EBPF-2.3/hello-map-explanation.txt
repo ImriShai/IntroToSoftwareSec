@@ -27,3 +27,9 @@ This script provides a simple example of using eBPF to monitor system call activ
 Overall - For each user, we count the number of syscalls made using BPF_HASH and then printing it every 2 seconds, filling the requirements of Q2.3
 
 In order to run: sudo python3 hello-map.py
+
+
+Installation of BCC: 
+
+https://github.com/iovisor/bcc/blob/master/INSTALL.md 
+install the source and compile it for Ubuntu
