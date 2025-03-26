@@ -20,3 +20,5 @@ This file is a set of instruction for this question.
 
 7. Find the debug, change it to needed and point it to the same location as libc
 
+8. Run readelf -d ./benignRandom and watch the new dynamic use and debug.
+

@@ -22,7 +22,7 @@ void srand(unsigned int seed) {
 // Custom implementation of time() that always returns a fixed time value, doesn't need a handler because it doesn't call the original function
 time_t time(time_t *t) {
     time_t fake_time = 1678900000; // Fixed time value
-    if (t) *t = fake_time;
+    if (t) *t = fake_time; // if t is not NULL, set the value to fake_time
     return fake_time;
 }
 
