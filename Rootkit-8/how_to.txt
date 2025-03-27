@@ -1,0 +1,31 @@
+In order to run:
+
+1. run make
+
+2. clean the dmesg log by using: sudo dmesg -c
+
+3. load the module: sudo insmod write_hook.ko
+
+4. check that the module loaded succesfuly: sudo dmesg - should be:
+
+"[ 2716.961337] Module loading with kernel 6.8.12
+[ 2716.964445] Registered kprobe for __x64_sys_write
+[ 2716.964447] Logging all write syscalls to /tmp/hidden_log.txt
+"
+
+4. Test it: echo "Test" > log.txt
+
+
+5. The dmesg should now show:
+
+[ 3459.739649] Matched target file! Logging write operation
+
+6. check /tmp/hidden_log.txt for reporting: should show - 
+
+Process 3034 wrote: Test
+
+7. Remove the module: sudo rmmod write_hook
+
+8. verify removal using dmesg, should show: 
+
+[ 3809.818919] Unregistered kprobe for __x64_sys_write
