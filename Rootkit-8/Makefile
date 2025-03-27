@@ -1,4 +1,4 @@
-obj-m += write_hook.o
+obj-m += temp.o
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 clean:
